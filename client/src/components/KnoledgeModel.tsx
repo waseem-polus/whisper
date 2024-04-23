@@ -1,5 +1,7 @@
 type Res = {
-    msg: string;
+    type: "command" | "answer";
+    content: string;
+    tooltips: { [key: string]: any };
 };
 
 const fetchChatGPTResponse = async (message: string): Promise<Res> => {
