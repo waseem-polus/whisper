@@ -72,7 +72,9 @@ export const speak = (
     setIsTalking: (status: boolean) => void,
 ) => {
     const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(
+        text.replace("<<", "").replace(">>", ""),
+    );
 
     utterance.onstart = () => {
         setIsTalking(true);

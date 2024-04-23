@@ -37,12 +37,15 @@ const Message = ({ message, loading = false }: props) => {
 
 const UsrMsg = ({ message }: userMessageProps) => {
     return (
-        <div className="flex gap-2">
+        <div className="flex flex-row-reverse gap-2">
             <Avatar>
-                <AvatarImage src="./Human.webp"></AvatarImage>
+                <AvatarImage
+                    className="scale-x-[-1]"
+                    src="./Human.webp"
+                ></AvatarImage>
             </Avatar>
 
-            <div className="bg-yellow-200 text-left px-5 py-2 rounded-2xl rounded-tl-none max-w-screen-md">
+            <div className="bg-yellow-200 text-left px-5 py-2 rounded-2xl rounded-tr-none max-w-screen-md">
                 {message.content}
             </div>
         </div>
@@ -104,12 +107,15 @@ const AssistantMsg = ({ message, loading = false }: props) => {
     }, []);
 
     return (
-        <div className="flex flex-row-reverse gap-2">
+        <div className="flex flex-row gap-2">
             <Avatar>
-                <AvatarImage src="./Bot.webp"></AvatarImage>
+                <AvatarImage
+                    className="scale-x-[-1]"
+                    src="./Bot.webp"
+                ></AvatarImage>
             </Avatar>
 
-            <div className="bg-gray-200 flex text-wrap flex-wrap px-5 gap-1 py-2 rounded-2xl rounded-tr-none max-w-screen-md text-left">
+            <div className="bg-gray-200 flex text-wrap flex-wrap px-5 gap-1 py-2 rounded-2xl rounded-tl-none max-w-screen-md text-left">
                 {loading ? <Loader2 className="animate-spin" /> : content}
             </div>
         </div>
