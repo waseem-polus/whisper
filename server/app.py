@@ -44,8 +44,6 @@ def hello_world():
       ]
     )
 
-    print(completion.choices[0].message.content)
-    print(json.loads(completion.choices[0].message.content))
     print(jsonify(json.loads(completion.choices[0].message.content)))
 
     response = jsonify(json.loads(completion.choices[0].message.content))
