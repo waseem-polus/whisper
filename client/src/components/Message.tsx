@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { useEffect, useState } from "react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import Tooltip from "./Tooltip";
 
 type userMessageT = {
     role: "user";
@@ -49,7 +50,7 @@ const UsrMsg = ({ message }: userMessageProps) => {
 };
 
 const AssistantMsg = ({ message, loading = false }: props) => {
-    const [content, setContent] = useState<JSX.Element[]>([]);
+    const [content, setContent] = useState<(string | JSX.Element)[]>([]);
 
     useEffect(() => {
         if (message.role == "assistant") {
@@ -63,19 +64,24 @@ const AssistantMsg = ({ message, loading = false }: props) => {
             while ((match = regex.exec(message.content)) !== null) {
                 if (lastIndex !== match.index) {
                     newContent.push(
-                        <Text key={newContent.length}>
-                            {message.content.slice(lastIndex, match.index)}
-                        </Text>,
+                        ...message.content
+                            .slice(lastIndex, match.index)
+                            .trim()
+                            .split(" ")
+                            .map((word) => <span>{word}</span>),
                     );
                 }
 
                 newContent.push(
                     <HoverCard key={newContent.length}>
-                        <HoverCardTrigger>
+                        <HoverCardTrigger className="inline">
                             <Text tooltip>{match[1]}</Text>
                         </HoverCardTrigger>
-                        <HoverCardContent>
-                            <Text>{message.tooltips[match[1]]}</Text>
+                        <HoverCardContent className="w-fit min-w-96 max-w-prose">
+                            <Tooltip
+                                word={match[1]}
+                                definition={message.tooltips[match[1]]}
+                            />
                         </HoverCardContent>
                     </HoverCard>,
                 );
@@ -86,9 +92,11 @@ const AssistantMsg = ({ message, loading = false }: props) => {
             }
 
             newContent.push(
-                <Text key={newContent.length}>
-                    {message.content.slice(lastIndex)}
-                </Text>,
+                ...message.content
+                    .slice(lastIndex)
+                    .trim()
+                    .split(" ")
+                    .map((word) => <span>{word}</span>),
             );
 
             setContent(newContent);
@@ -101,7 +109,7 @@ const AssistantMsg = ({ message, loading = false }: props) => {
                 <AvatarImage src="./Bot.webp"></AvatarImage>
             </Avatar>
 
-            <div className="bg-gray-200 flex flex-wrap px-5 gap-1 py-2 rounded-2xl rounded-tr-none max-w-screen-md">
+            <div className="bg-gray-200 flex text-wrap flex-wrap px-5 gap-1 py-2 rounded-2xl rounded-tr-none max-w-screen-md text-left">
                 {loading ? <Loader2 className="animate-spin" /> : content}
             </div>
         </div>
@@ -116,7 +124,7 @@ const Text = ({
     tooltip?: boolean;
 }) => {
     return (
-        <p
+        <span
             className={
                 tooltip
                     ? "inline-flex text-left rounded-sm font-semibold underline cursor-pointer"
@@ -124,7 +132,7 @@ const Text = ({
             }
         >
             {children}
-        </p>
+        </span>
     );
 };
 
