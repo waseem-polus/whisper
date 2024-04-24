@@ -12,11 +12,12 @@ import {
     BookText,
     BookType,
     BookUser,
-    Bot,
     BotMessageSquare,
     Ear,
+    EarOff,
     Mic,
 } from "lucide-react";
+import { useToast } from "./components/ui/use-toast";
 
 function App() {
     const [chatLog, setChatLog] = useState<Array<Msg>>([]);
@@ -24,6 +25,9 @@ function App() {
         useVoiceRecognition();
     const [isThinking, setIsThinking] = useState<boolean>(false);
     const [isTalking, setIsTalking] = useState<boolean>(false);
+    const [autoListen, setAutoListen] = useState<boolean>(true);
+
+    const { toast } = useToast();
 
     useEffect(() => {
         if (!isListening && transcript != "") {
@@ -42,9 +46,17 @@ function App() {
                 ]);
 
                 if (res.type === "answer") {
-                    speak(res.content, setIsTalking);
+                    speak(
+                        res.content,
+                        setIsTalking,
+                        autoListen ? listen : () => {},
+                    );
                 } else if (res.type === "command" && res.content === "repeat") {
-                    speak(chatLog[chatLog.length - 1].content, setIsTalking);
+                    speak(
+                        chatLog[chatLog.length - 1].content,
+                        setIsTalking,
+                        autoListen ? listen : () => {},
+                    );
                 } else if (res.type === "command" && res.content === "quit") {
                     setChatLog([
                         {
@@ -58,6 +70,7 @@ function App() {
                     speak(
                         "Started a new context. How can I help you?",
                         setIsTalking,
+                        autoListen ? listen : () => {},
                     );
                 }
             });
@@ -149,6 +162,19 @@ function App() {
                         Ask a Question
                     </Button>
                 )}
+                <Button
+                    onClick={() => {
+                        toast({
+                            title: !autoListen
+                                ? "Auto listen on"
+                                : "Auto listen off",
+                        });
+                        setAutoListen(!autoListen);
+                    }}
+                    size="icon"
+                >
+                    {autoListen ? <Ear /> : <EarOff />}
+                </Button>
             </div>
         </div>
     );

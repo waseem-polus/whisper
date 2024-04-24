@@ -70,6 +70,7 @@ export const useVoiceRecognition = (): VoiceRecognition => {
 export const speak = (
     text: string,
     setIsTalking: (status: boolean) => void,
+    onEnd?: () => void = () => {},
 ) => {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(
@@ -82,6 +83,7 @@ export const speak = (
 
     utterance.onend = () => {
         setIsTalking(false);
+        onEnd();
     };
 
     synth.speak(utterance);
